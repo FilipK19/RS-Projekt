@@ -11,21 +11,41 @@ async def home():
     html_content = """
     <html>
         <head>
-            <title>My FastAPI App</title>
+            <title>Welcome</title>
              <style>
                 body {
                     text-align: center;
                     margin: 20px;
                 }
                 h1 {
-                    color: #333;
+                    margin: 5px 0;
+                    font-family: "Book Antiqua", Palatino, serif;
+                    font-size: 48px;
+                }
+                h2 {
+                    margin: 5px 0;
+                    font-family: "Book Antiqua", Palatino, serif;
+                    font-size: 64px;
                 }
                 p {
-                    color: #666;
+                    margin: 65px;
+                }
+                .input-container {
+                    width: 300px;
+                    margin: 30px auto;
+                    text-align: left;
+                }
+                label {
+                    display: block;
+                    margin-bottom: 5px;
+                }
+                input {
+                    width: 100%;
+                    padding: 10px;
+                    box-sizing: border-box;
                 }
                 button {
-                    background-color: #4CAF50;
-                    color: white;
+                    color: black;
                     padding: 10px 20px;
                     font-size: 16px;
                     cursor: pointer;
@@ -33,17 +53,29 @@ async def home():
             </style>
         </head>
         <body>
-            <h1>Welcome to my FastAPI App!</h1>
-            <p>This is some additional text.</p>
-             <a href="/test">
-                <button>Go to Another Page</button>
+            <h1>Welcome to</h1>
+            <h2>Collaborate</h2>
+            <p> </p>
+
+            <div class="input-container">
+                <label>Name:</label>
+                <input type="text" placeholder="Input name">
+            </div>
+
+            <div class="input-container">
+                <label>Password:</label>
+                <input type="text" placeholder="Input password">
+            </div>
+
+             <a href="/home">
+                <button>Login</button>
         </body>
     </html>
     """
     return HTMLResponse(content=html_content)
 
 
-@app.get("/test")
+@app.get("/home")
 async def home():
     html_content = """
     <html>
@@ -52,8 +84,6 @@ async def home():
         </head>
         <body>
             <h1>Test!</h1>
-             <a href="/">
-                <button>Back</button>
         </body>
     </html>
     """
