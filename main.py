@@ -81,9 +81,30 @@ async def home():
     <html>
         <head>
             <title>Test</title>
+            <style>
+                body {
+                    text-align: center;
+                    margin: 20px;
+                }
+                h1 {
+                    margin: 5px 0;
+                    font-family: "Book Antiqua", Palatino, serif;
+                    font-size: 65px;
+                }
+                .button-container button {
+                    margin: 100 100px;
+                    padding: 10px 20px;
+                    font-size: 16px;
+                    cursor: pointer;
+                }
+            </style>
         </head>
         <body>
-            <h1>Test!</h1>
+            <h1>Collaborate</h1>
+            <div class="button-container">
+                <button type="button">Eddit existing document</button>
+                <button type="button">Create new document</button>
+            </div>
         </body>
     </html>
     """
