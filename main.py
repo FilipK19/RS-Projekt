@@ -98,13 +98,22 @@ async def home():
                     cursor: pointer;
                 }
             </style>
+            <script>
+                function navigateToSite(url) {
+                window.location.href = url;
+                }
+            </script>
         </head>
         <body>
             <h1>Collaborate</h1>
             <div class="button-container">
                 <button type="button">Eddit existing document</button>
-                <button type="button">Create new document</button>
+                <button type="button" onclick="navigateToSite('http://localhost:8001/create')">Create new document</button>
             </div>
+            <script>
+                function navigateToSite(url) {
+                window.location.href = url;
+            }
         </body>
     </html>
     """
