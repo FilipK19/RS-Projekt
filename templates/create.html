@@ -9,16 +9,50 @@
             h1 {
                 margin: 5px 0;
                 font-family: "Book Antiqua", Palatino, serif;
-                font-size: 48px;
+                font-size: 65px;
             }
             p {
                 margin: 65px;
+            }
+            .input-container {
+                width: 500px;
+                margin: 20px auto;
+                text-align: left;
+            }
+            label {
+                display: block;
+                margin-bottom: 5px;
+                font-size: 20px;
+            }
+            input {
+                width: 100%;
+                padding: 10px;
+                box-sizing: border-box;
+
+            }
+            button {
+                color: black;
+                padding: 10px 20px;
+                font-size: 16px;
+                cursor: pointer;
             }
         </style>
     </head>
     <body>
         <h1>Collaborate</h1>
         <p> </p>
+
+        <div class="input-container">
+            <label>Document name:</label>
+            <input type="text" placeholder="Input name">
+        </div>
+
+        <div class="input-container">
+            <label>Description:</label>
+            <textarea name="content" rows="10" cols="65" required></textarea><br>
+        </div>
+        <a href="/home">
+            <button>Create</button>
 
     </body>
 </html>
