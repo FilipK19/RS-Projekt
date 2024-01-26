@@ -1,120 +1,23 @@
-import fastapi
+from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
 
 
-app = fastapi.FastAPI()
+app = FastAPI()
+templates = Jinja2Templates(directory="templates")
 
 
 
 @app.get("/")
-async def home():
-    html_content = """
-    <html>
-        <head>
-            <title>Welcome</title>
-             <style>
-                body {
-                    text-align: center;
-                    margin: 20px;
-                }
-                h1 {
-                    margin: 5px 0;
-                    font-family: "Book Antiqua", Palatino, serif;
-                    font-size: 48px;
-                }
-                h2 {
-                    margin: 5px 0;
-                    font-family: "Book Antiqua", Palatino, serif;
-                    font-size: 64px;
-                }
-                p {
-                    margin: 65px;
-                }
-                .input-container {
-                    width: 300px;
-                    margin: 30px auto;
-                    text-align: left;
-                }
-                label {
-                    display: block;
-                    margin-bottom: 5px;
-                }
-                input {
-                    width: 100%;
-                    padding: 10px;
-                    box-sizing: border-box;
-                }
-                button {
-                    color: black;
-                    padding: 10px 20px;
-                    font-size: 16px;
-                    cursor: pointer;
-                }
-            </style>
-        </head>
-        <body>
-            <h1>Welcome to</h1>
-            <h2>Collaborate</h2>
-            <p> </p>
-
-            <div class="input-container">
-                <label>Name:</label>
-                <input type="text" placeholder="Input name">
-            </div>
-
-            <div class="input-container">
-                <label>Password:</label>
-                <input type="text" placeholder="Input password">
-            </div>
-
-             <a href="/home">
-                <button>Login</button>
-        </body>
-    </html>
-    """
-    return HTMLResponse(content=html_content)
+async def home(request: Request):
+    return templates.TemplateResponse("welcome.html", {"request": request})
 
 
 @app.get("/home")
-async def home():
-    html_content = """
-    <html>
-        <head>
-            <title>Test</title>
-            <style>
-                body {
-                    text-align: center;
-                    margin: 20px;
-                }
-                h1 {
-                    margin: 5px 0;
-                    font-family: "Book Antiqua", Palatino, serif;
-                    font-size: 65px;
-                }
-                .button-container button {
-                    margin: 100 100px;
-                    padding: 10px 20px;
-                    font-size: 16px;
-                    cursor: pointer;
-                }
-            </style>
-            <script>
-                function navigateToSite(url) {
-                window.location.href = url;
-                }
-            </script>
-        </head>
-        <body>
-            <h1>Collaborate</h1>
-            <div class="button-container">
-                <button type="button">Eddit existing document</button>
-                <button type="button" onclick="navigateToSite('http://localhost:8001/create')">Create new document</button>
-            </div>
-            <script>
-                function navigateToSite(url) {
-                window.location.href = url;
-            }
-        </body>
-    </html>
-    """
-    return HTMLResponse(content=html_content)
+async def home(request: Request):
+    return templates.TemplateResponse("home.html", {"request": request})
+
+
+@app.get("/create")
+async def home(request: Request):
+    return templates.TemplateResponse("create.html", {"request": request})
