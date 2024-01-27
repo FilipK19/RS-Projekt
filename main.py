@@ -21,3 +21,8 @@ async def home(request: Request):
 @app.get("/create")
 async def home(request: Request):
     return templates.TemplateResponse("create.html", {"request": request})
+
+
+@app.get("/edit")
+async def home(request: Request):
+    return templates.TemplateResponse("edit.html", {"request": request})
