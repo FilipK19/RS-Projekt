@@ -21,6 +21,7 @@ class DocumentModel(Base):
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, index=True)
     description = Column(Text)
+    content = Text
 
 Base.metadata.create_all(bind=engine)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -33,16 +34,16 @@ async def create_form(request: Request):
 
 
 @app.post("/create-document/")
-async def create_document(title: str = Form(...), description: str = Form(...)):
-    save_document(title, description)
+async def create_document(title: str = Form(...), description: str = Form(...), content: str = " "):
+    save_document(title, description, content)
     return {"message": "Document created successfully!"}
 
 
 
 # Helper functions
-def save_document(title: str, description: str):
+def save_document(title: str, description: str, content: str):
     db = SessionLocal()
-    db_document = DocumentModel(title=title, description=description)
+    db_document = DocumentModel(title=title, description=description, content=content)
     db.add(db_document)
     db.commit()
     db.refresh(db_document)
