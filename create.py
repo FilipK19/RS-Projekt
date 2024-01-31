@@ -1,56 +1,44 @@
-from fastapi import FastAPI, Request, Form
-from fastapi.requests import Request
+from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
-from docx import Document
-from sqlalchemy import create_engine, Column, Integer, String, Text
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from motor.motor_asyncio import AsyncIOMotorClient
+from pydantic import BaseModel
+from bson import ObjectId
+from typing import List
 
 app = FastAPI()
-templates = Jinja2Templates(directory="c_templates")
+templates = Jinja2Templates(directory="templates")
 
+# MongoDB setup
+MONGODB_URL = "mongodb+srv://admin:admin123@cluster0.1cbo1.mongodb.net/"
+client = AsyncIOMotorClient(MONGODB_URL)
+database = client["test2"]  # Replace "your_database_name" with your desired database name
 
-# SQLite database setup
-DATABASE_URL = "sqlite:///./test.db"
-engine = create_engine(DATABASE_URL)
-Base = declarative_base()
+# MongoDB document model
+class DocumentModel(BaseModel):
+    id: str = str(ObjectId())
+    title: str
+    description: str
+    content: str = ""
 
-
-class DocumentModel(Base):
-    __tablename__ = "documents"
-    id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, index=True)
-    description = Column(Text)
-    content = Text
-
-Base.metadata.create_all(bind=engine)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
+# Routes
 
 @app.get("/create")
 async def create_form(request: Request):
-    documents = get_documents()
+    documents = await get_documents()
     return templates.TemplateResponse("create.html", {"request": request, "documents": documents})
 
 
 @app.post("/create-document/")
-async def create_document(title: str = Form(...), description: str = Form(...), content: str = " "):
-    save_document(title, description, content)
+async def create_document(document: DocumentModel):
+    await save_document(document)
     return {"message": "Document created successfully!"}
 
 
-
 # Helper functions
-def save_document(title: str, description: str, content: str):
-    db = SessionLocal()
-    db_document = DocumentModel(title=title, description=description, content=content)
-    db.add(db_document)
-    db.commit()
-    db.refresh(db_document)
-    db.close()
+async def save_document(document: DocumentModel):
+    await database.documents.insert_one(document.dict())
 
-def get_documents():
-    db = SessionLocal()
-    documents = db.query(DocumentModel).all()
-    db.close()
+
+async def get_documents():
+    documents = await database.documents.find().to_list(length=100)
     return documents

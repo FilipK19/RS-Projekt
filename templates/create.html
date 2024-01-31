@@ -1,58 +1,86 @@
 <html>
-    <head>
-        <title>Create</title>
-         <style>
-            body {
-                text-align: center;
-                margin: 20px;
-            }
-            h1 {
-                margin: 5px 0;
-                font-family: "Book Antiqua", Palatino, serif;
-                font-size: 65px;
-            }
-            p {
-                margin: 65px;
-            }
-            .input-container {
-                width: 500px;
-                margin: 20px auto;
-                text-align: left;
-            }
-            label {
-                display: block;
-                margin-bottom: 5px;
-                font-size: 20px;
-            }
-            input {
-                width: 100%;
-                padding: 10px;
-                box-sizing: border-box;
-
-            }
-            button {
-                color: black;
-                padding: 10px 20px;
-                font-size: 16px;
-                cursor: pointer;
-            }
-        </style>
-    </head>
-    <body>
-        <h1>Collaborate</h1>
-        <p> </p>
-
+<head>
+    <title>Create</title>
+     <style>
+        body {
+            text-align: center;
+            margin: 20px;
+        }
+        h1 {
+            margin: 5px 0;
+            font-family: "Book Antiqua", Palatino, serif;
+            font-size: 65px;
+        }
+        p {
+            margin: 65px;
+        }
+        .input-container {
+            width: 500px;
+            margin: 20px auto;
+            text-align: left;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 20px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        button {
+            color: black;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Collaborate</h1>
+    <form id="documentForm">
         <div class="input-container">
-            <label>Document name:</label>
-            <input type="text" placeholder="Input name">
+            <label for="title">Title:</label>
+            <input type="text" name="title" id="title" required><br>
         </div>
 
         <div class="input-container">
             <label>Description:</label>
-            <textarea name="content" rows="10" cols="65" required></textarea><br>
+            <textarea name="description" id="description" rows="10" cols="65" required></textarea><br>
         </div>
-        <a href="/home">
-            <button>Create</button>
+        <button type="button" onclick="createDocument()">Create</button>
+    </form>
 
-    </body>
+    <script>
+        async function createDocument() {
+            const title = document.getElementById('title').value;
+            const description = document.getElementById('description').value;
+
+            try {
+                const response = await fetch('/create-document/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ title, description }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                alert(result.message);
+            } catch (error) {
+                console.error('Error:', error.message);
+                alert('An error occurred. Please check the console for more details.');
+            }
+        }
+
+        document.getElementById('documentForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+        });
+    </script>
+</body>
 </html>

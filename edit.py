@@ -1,74 +1,60 @@
-from fastapi import FastAPI, Request, Form
-from fastapi.requests import Request
+from fastapi import FastAPI, Request, Query
 from fastapi.templating import Jinja2Templates
-from docx import Document
-from sqlalchemy import create_engine, Column, Integer, String, Text
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from motor.motor_asyncio import AsyncIOMotorClient
+from pydantic import BaseModel
+from bson import ObjectId
+from typing import List
 
 app = FastAPI()
 templates = Jinja2Templates(directory="e_templates")
 
+# MongoDB setup
+MONGODB_URL = "mongodb+srv://admin:admin123@cluster0.1cbo1.mongodb.net/"
+client = AsyncIOMotorClient(MONGODB_URL)
+database = client["test2"]
 
-# SQLite database setup
-DATABASE_URL = "sqlite:///./test.db"
-engine = create_engine(DATABASE_URL)
-Base = declarative_base()
+# MongoDB document model
+class DocumentModel(BaseModel):
+    id: str = str(ObjectId())
+    title: str
+    description: str
+    content: str = ""
 
-
-class DocumentModel(Base):
-    __tablename__ = "documents"
-    id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, index=True)
-    description = Column(Text)
-    content = Text
-
-Base.metadata.create_all(bind=engine)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
+# Routes
 
 @app.get("/edit")
 async def edit_doc(request: Request):
-    documents = get_documents()
+    documents = await get_documents()
     return templates.TemplateResponse("edit.html", {"request": request, "documents": documents})
 
 @app.get("/edit/{document_id}")
-async def edit_document(request: Request, document_id: int):
-    document = get_document(document_id)
-    return templates.TemplateResponse("edit2.html", {"request": request, "document": document})
+async def edit_document(request: Request, document_id: str):
+    document = await get_document(document_id)
+    return templates.TemplateResponse("edit2.html", {"request": request, "document": document, "document_id": document_id})
+
 
 @app.post("/edit-document/{document_id}")
-async def edit_document_post(document_id: int, title: str = Form(...), description: str = Form(...), content: str = " "):
-    update_document(document_id, title, description, content)
+async def edit_document_post(document_id: str, request: DocumentModel):
+    await update_document(document_id, request.title, request.description, request.content)
     return {"message": "Document updated successfully!"}
 
-# Helper functions
-def save_document(title: str, description: str, content: str):
-    db = SessionLocal()
-    db_document = DocumentModel(title=title, description=description, content=content)
-    db.add(db_document)
-    db.commit()
-    db.refresh(db_document)
-    db.close()
 
-def get_documents():
-    db = SessionLocal()
-    documents = db.query(DocumentModel).all()
-    db.close()
+# Helper functions
+async def save_document(title: str, description: str, content: str):
+    await database.documents.insert_one({"title": title, "description": description, "content": content})
+
+async def get_documents():
+    documents = await database.documents.find().to_list(length=100)
     return documents
 
-def get_document(document_id: int):
-    db = SessionLocal()
-    document = db.query(DocumentModel).filter(DocumentModel.id == document_id).first()
-    db.close()
-    return document
+async def get_document(document_id: str):
+    document = await database.documents.find_one({"_id": ObjectId(document_id)})
+    if document:
+        return {"title": document["title"], "description": document["description"], "content": document["content"]}
+    return None
 
-def update_document(document_id: int, title: str, description: str ,content: str):
-    db = SessionLocal()
-    db_document = db.query(DocumentModel).filter(DocumentModel.id == document_id).first()
-    db_document.title = title
-    db_document.description = description
-    db_document.content = content
-    db.commit()
-    db.refresh(db_document)
-    db.close()
+async def update_document(document_id: str, title: str, description: str, content: str):
+    await database.documents.update_one(
+        {"_id": ObjectId(document_id)},
+        {"$set": {"title": title, "description": description, "content": content}}
+    )

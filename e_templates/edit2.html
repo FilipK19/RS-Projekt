@@ -9,24 +9,27 @@
 </head>
 <body>
     <h1>Edit Document</h1>
-    <form method="post" action="/edit-document/{{ document.id }}">
+    <form method="post" action="/edit-document/{{ document_id }}" enctype="multipart/form-data">
         <label for="title">Title:</label>
         <input type="text" name="title" id="title" value="{{ document.title }}" required>
-        
+    
         <br>
-        
+    
         <label for="description">Description:</label>
         <textarea name="description" id="description" rows="4" required>{{ document.description }}</textarea>
-        
+    
         <br>
-        
+    
         <label for="content">Content:</label>
         <textarea name="content" id="content" rows="8" required>{{ document.content }}</textarea>
-        
+    
         <br>
-        
+    
         <button type="submit">Save Changes</button>
     </form>
+    
+    
+    
     <br>
     <a href="/edit">Back to Document List</a>
 </body>

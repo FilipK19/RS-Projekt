@@ -39,7 +39,7 @@
         <p> </p>
         <div class="button-container">
             {% for document in documents %}
-                <form method="get" action="/edit/{{ document.id }}">
+                <form method="get" action="/edit/{{ document._id }}">
                     <button type="submit">{{ 'Id: ' ~ document.id }}<span class="space"></span>{{ 'Name: ' ~ document.title }}<span class="space"></span>{{'Description: ' ~ document.description}}</button>
                 </form>
             {% endfor %}
