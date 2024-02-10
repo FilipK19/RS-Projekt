@@ -14,73 +14,27 @@
         p {
             margin: 65px;
         }
-        .input-container {
-            width: 500px;
-            margin: 20px auto;
-            text-align: left;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-size: 20px;
-        }
-        input, textarea {
-            width: 100%;
-            padding: 10px;
-            box-sizing: border-box;
-        }
-        button {
-            color: black;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-        }
     </style>
 </head>
 <body>
     <h1>Collaborate</h1>
-    <form id="documentForm">
-        <div class="input-container">
-            <label for="title">Title:</label>
-            <input type="text" name="title" id="title" required><br>
-        </div>
+    <ul>
+        {% for document in documents %}
+            <li>{{ document.name }} - {{ document.content }}</li>
+        {% endfor %}
+    </ul>
 
-        <div class="input-container">
-            <label>Description:</label>
-            <textarea name="description" id="description" rows="10" cols="65" required></textarea><br>
-        </div>
-        <button type="button" onclick="createDocument()">Create</button>
+    <form action="/create_document/" method="post">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required><br>
+
+        <label for="description">Description:</label>
+        <input type="text" id="description" name="description" required><br>
+
+        <label for="content">Content:</label>
+        <textarea id="content" name="content"></textarea><br>
+
+        <input type="submit" value="Create Document">
     </form>
-
-    <script>
-        async function createDocument() {
-            const title = document.getElementById('title').value;
-            const description = document.getElementById('description').value;
-
-            try {
-                const response = await fetch('/create-document/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ title, description }),
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-
-                const result = await response.json();
-                alert(result.message);
-            } catch (error) {
-                console.error('Error:', error.message);
-                alert('An error occurred. Please check the console for more details.');
-            }
-        }
-
-        document.getElementById('documentForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-        });
-    </script>
 </body>
 </html>

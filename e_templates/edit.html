@@ -1,49 +1,49 @@
-<!-- templates/home.html -->
 <html>
-    <head>
-        <title>Document List</title>
-        <style>
-            body {
-                text-align: center;
-                margin: 20px;
-            }
-            h1 {
-                margin: 5px 0;
-                font-family: "Book Antiqua", Palatino, serif;
-                font-size: 65px;
-            }
-            p {
-                margin: 50px;
-            }
-            .button-container {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-            }
-            button {
-                color: black;
-                padding: 10px;
-                font-size: 16px;
-                cursor: pointer;
-                display: block;
-                width: 500px;
-                text-align: left;
-            }
-            .space {
-                margin-right: 50px;
-            }
-        </style>
-    </head>
-    <body>
-        <h1>Collaborate</h1>
-        <p> </p>
-        <div class="button-container">
-            {% for document in documents %}
-                <form method="get" action="/edit/{{ document._id }}">
-                    <button type="submit">{{ 'Id: ' ~ document.id }}<span class="space"></span>{{ 'Name: ' ~ document.title }}<span class="space"></span>{{'Description: ' ~ document.description}}</button>
-                </form>
-            {% endfor %}
-        </div>
+<head>
+    <title>Edit</title>
+    <style>
+        body {
+            text-align: center;
+            margin: 20px;
+        }
+        h1 {
+            margin: 5px 0;
+            font-family: "Book Antiqua", Palatino, serif;
+            font-size: 65px;
+        }
+        p {
+            margin: 50px;
+        }
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        button {
+            color: black;
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            display: block;
+            width: 500px;
+            text-align: left;
+        }
+        .space {
+            margin-right: 50px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Collaborate</h1>
+    <p> </p>
+    <div class="button-container">
+        {% for document in documents %}
+            <form method="get" action="/edit_document/{{ document._id }}">
+                
+                <button type="submit">{{ 'Name: ' ~ document.name }} + {{'Description: ' ~ document.description}}</button>
+            </form>
+        {% endfor %}
+    </div>
 
-    </body>
+</body>
 </html>

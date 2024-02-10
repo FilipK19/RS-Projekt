@@ -1,44 +1,27 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Form
+from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
-from motor.motor_asyncio import AsyncIOMotorClient
-from pydantic import BaseModel
-from bson import ObjectId
-from typing import List
+from pymongo import MongoClient
+
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 
-# MongoDB setup
-MONGODB_URL = "mongodb+srv://admin:admin123@cluster0.1cbo1.mongodb.net/"
-client = AsyncIOMotorClient(MONGODB_URL)
-database = client["test2"]  # Replace "your_database_name" with your desired database name
 
-# MongoDB document model
-class DocumentModel(BaseModel):
-    id: str = str(ObjectId())
-    title: str
-    description: str
-    content: str = ""
+client = MongoClient("mongodb+srv://admin:admin123@cluster0.1cbo1.mongodb.net/")
+mydb = client["test5"]
+collection = mydb["Documents"]
 
-# Routes
 
-@app.get("/create")
+
+@app.get("/create", response_class=HTMLResponse)
 async def create_form(request: Request):
-    documents = await get_documents()
+    documents = collection.find()
     return templates.TemplateResponse("create.html", {"request": request, "documents": documents})
 
 
-@app.post("/create-document/")
-async def create_document(document: DocumentModel):
-    await save_document(document)
-    return {"message": "Document created successfully!"}
-
-
-# Helper functions
-async def save_document(document: DocumentModel):
-    await database.documents.insert_one(document.dict())
-
-
-async def get_documents():
-    documents = await database.documents.find().to_list(length=100)
-    return documents
+@app.post("/create_document/")
+async def create_document(name: str = Form(...), description: str = Form(...), content: str = Form(default='')):
+    document = {"name": name, "description": description, "content": content}
+    collection.insert_one(document)
+    return {"status": "Document created successfully"}

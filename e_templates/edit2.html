@@ -1,36 +1,15 @@
-<!-- e_templates/edit2.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Document</title>
+    <title>Edit2</title>
 </head>
 <body>
     <h1>Edit Document</h1>
-    <form method="post" action="/edit-document/{{ document_id }}" enctype="multipart/form-data">
-        <label for="title">Title:</label>
-        <input type="text" name="title" id="title" value="{{ document.title }}" required>
-    
-        <br>
-    
-        <label for="description">Description:</label>
-        <textarea name="description" id="description" rows="4" required>{{ document.description }}</textarea>
-    
-        <br>
-    
+    <form action="/update_document/{{ document_id }}" method="post">
         <label for="content">Content:</label>
         <textarea name="content" id="content" rows="8" required>{{ document.content }}</textarea>
-    
-        <br>
-    
-        <button type="submit">Save Changes</button>
+
+        <input type="submit" value="Update Document">
     </form>
-    
-    
-    
-    <br>
-    <a href="/edit">Back to Document List</a>
 </body>
 </html>
