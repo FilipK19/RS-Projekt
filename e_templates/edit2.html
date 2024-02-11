@@ -1,15 +1,54 @@
-<!DOCTYPE html>
 <html>
 <head>
     <title>Edit2</title>
+    <style>
+        body {
+            text-align: center;
+            margin: 20px;
+        }
+        h1 {
+            margin: 5px 0;
+            font-family: "Book Antiqua", Palatino, serif;
+            font-size: 65px;
+        }
+        p {
+            margin: 50px;
+        }
+        button {
+            color: black;
+            padding: 15px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 180px;
+        }
+    </style>
 </head>
 <body>
     <h1>Edit Document</h1>
-    <form action="/update_document/{{ document_id }}" method="post">
-        <label for="content">Content:</label>
-        <textarea name="content" id="content" rows="8" required>{{ document.content }}</textarea>
-
-        <input type="submit" value="Update Document">
+    <form id="updateForm" action="/update_document/{{ document_id }}" method="post">
+        <textarea name="content" id="content" rows="50" cols="100" required>{{ document.content }}</textarea>
+        <p></p>
+        <button type="button" onclick="updateDocument()">Update Document</button>
     </form>
+
+    <script>
+        function updateDocument() {
+            fetch('/update_document/{{ document_id }}', {
+                method: 'POST',
+                body: new FormData(document.getElementById('updateForm')),
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Updated successfully');
+                    window.location.href = '/edit';
+                } else {
+                    alert('Update failed');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
 </body>
 </html>

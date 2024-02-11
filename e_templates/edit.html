@@ -40,7 +40,7 @@
         {% for document in documents %}
             <form method="get" action="/edit_document/{{ document._id }}">
                 
-                <button type="submit">{{ 'Name: ' ~ document.name }} + {{'Description: ' ~ document.description}}</button>
+                <button type="submit">{{ 'Name: ' ~ document.name }}<span class="space"></span>{{'Description: ' ~ document.description}}</button>
             </form>
         {% endfor %}
     </div>
