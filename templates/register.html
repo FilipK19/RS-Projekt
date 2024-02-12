@@ -1,0 +1,33 @@
+<html>
+    <head>
+        <title>Home</title>
+        <style>
+            body {
+                text-align: center;
+                margin: 20px;
+            }
+            h1 {
+                margin: 5px 0;
+                font-family: "Book Antiqua", Palatino, serif;
+                font-size: 65px;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Collaborate</h1>
+
+        <form id="register" action="/register_user" method="post">
+            <div class="input-container">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" placeholder="Input name" required><br>
+            </div>
+    
+            <div class="input-container">
+                <label for="password">Password:</label>
+                <input type="text" id="password" name="password" placeholder="Password" required><br>
+            </div>
+
+            <input type="submit" value="register">
+        </form>
+    </body>
+</html>
