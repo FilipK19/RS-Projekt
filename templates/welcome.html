@@ -46,20 +46,53 @@
         <h2>Collaborate</h2>
         <p> </p>
 
-        <div class="input-container">
-            <label>Name:</label>
-            <input type="text" placeholder="Input name">
-        </div>
-
-        <div class="input-container">
-            <label>Password:</label>
-            <input type="text" placeholder="Input password">
-        </div>
-
-         <a href="/home">
-            <button>Login</button>
+        <form id="loginForm">
+            <div class="input-container">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" placeholder="Input username" required><br>
+            </div>
         
+            <div class="input-container">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" placeholder="Password" required><br>
+            </div>
+        
+            <button type="button" onclick="performLogin()">Login</button>
+        </form>
+        
+        <script>
+            async function performLogin() {
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+        
+                const formData = {
+                    username: username,
+                    password: password
+                };
+        
+                try {
+                    const response = await fetch('/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(formData),
+                    });
+        
+                    if (response.ok) {
+                        // Login succeeded, redirect to the desired URL (e.g., /home)
+                        window.location.href = '/home';
+                    } else {
+                        const data = await response.json();
+                        console.log(data);
+                        // Handle the response data as needed (e.g., show an error message)
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            }
+        </script>
         <a href="/register">
-            <button>Register</button>
+            <button type="button">Register</button>
     </body>
-</html>
+</html>    
