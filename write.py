@@ -8,6 +8,6 @@ templates = Jinja2Templates(directory="w_templates")
 
 
 
-@app.get("/write")
+@app.get("/")
 async def home(request: Request):
     return templates.TemplateResponse("write.html", {"request": request})

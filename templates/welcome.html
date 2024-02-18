@@ -39,6 +39,10 @@
                 font-size: 16px;
                 cursor: pointer;
             }
+            .error-message {
+                color: red;
+                margin-top: 10px;
+            }
         </style>
     </head>
     <body>
@@ -59,11 +63,15 @@
         
             <button type="button" onclick="performLogin()">Login</button>
         </form>
-        
+        <a href="/register">
+            <button type="button">Register</button>
+        </a>
+        <div id="errorMessage" class="error-message"></div>
         <script>
             async function performLogin() {
                 const username = document.getElementById('username').value;
                 const password = document.getElementById('password').value;
+                const errorMessageElement = document.getElementById('errorMessage');
         
                 const formData = {
                     username: username,
@@ -80,19 +88,16 @@
                     });
         
                     if (response.ok) {
-                        // Login succeeded, redirect to the desired URL (e.g., /home)
                         window.location.href = '/home';
                     } else {
                         const data = await response.json();
-                        console.log(data);
-                        // Handle the response data as needed (e.g., show an error message)
+                        errorMessageElement.textContent = data.detail || 'Invalid credentials'; // Display the error message or a default message
                     }
                 } catch (error) {
                     console.error('Error:', error);
+                    errorMessageElement.textContent = 'An error occurred during login.';
                 }
             }
         </script>
-        <a href="/register">
-            <button type="button">Register</button>
     </body>
-</html>    
+</html>
