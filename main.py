@@ -46,7 +46,6 @@ class TokenData(BaseModel):
 
 class User(BaseModel):
     username: str
-    email: str | None = None
 
 class UserInDB(User):
     hashed_password: str
@@ -105,12 +104,28 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
         raise credentials_exception
     return user
 
+async def verify_access_token(token: Annotated[str, Depends(oauth2_scheme)]):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username: str = payload.get("sub")
+        if username is None:
+            raise credentials_exception
+        token_data = TokenData(username=username)
+    except JWTError:
+        raise credentials_exception
+    return token_data
+
 async def get_current_active_user(
     current_user: Annotated[User, Depends(get_current_user)]):
     return current_user
 
 
-@app.post("/token")
+@app.post("/login")
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()]
 ) -> Token:
@@ -154,3 +169,27 @@ async def create_user_endpoint(user: UserInDB):
     await create_user(db, UserInDB(**user_data))
     
     return user
+
+
+# Example route that requires authentication
+@app.get("/protected")
+async def protected_route(current_user: str = Depends(verify_access_token)):
+    print(current_user)
+    return {"message": "You have access to this protected route!", "current_user": current_user}
+
+@app.post("/token")
+async def login_for_access_token(
+    form_data: Annotated[OAuth2PasswordRequestForm, Depends()]
+) -> Token:
+    user = await authenticate_user(form_data.username, form_data.password)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": user.username}, expires_delta=access_token_expires
+    )
+    return Token(access_token=access_token, token_type="bearer")

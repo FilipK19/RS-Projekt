@@ -1,6 +1,8 @@
-<html>
-    <head>
-        <title>Welcome</title>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Form</title>y
          <style>
             body {
                 text-align: center;
@@ -51,53 +53,78 @@
         <p> </p>
 
         <form id="loginForm">
-            <div class="input-container">
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" placeholder="Input username" required><br>
-            </div>
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required><br>
         
-            <div class="input-container">
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" placeholder="Password" required><br>
-            </div>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required><br>
         
-            <button type="button" onclick="performLogin()">Login</button>
+            <button type="button" onclick="submitLoginForm()">Login</button>
         </form>
-        <a href="/register">
-            <button type="button">Register</button>
-        </a>
-        <div id="errorMessage" class="error-message"></div>
+        
         <script>
-            async function performLogin() {
+            async function submitLoginForm() {
                 const username = document.getElementById('username').value;
                 const password = document.getElementById('password').value;
-                const errorMessageElement = document.getElementById('errorMessage');
         
-                const formData = {
-                    username: username,
-                    password: password
-                };
+                const formData = new URLSearchParams();
+                formData.append('username', username);
+                formData.append('password', password);
         
                 try {
                     const response = await fetch('/login', {
                         method: 'POST',
                         headers: {
-                            'Content-Type': 'application/json',
+                            'Content-Type': 'application/x-www-form-urlencoded',
                         },
-                        body: JSON.stringify(formData),
+                        body: formData,
                     });
         
                     if (response.ok) {
-                        window.location.href = '/home';
-                    } else {
                         const data = await response.json();
-                        errorMessageElement.textContent = data.detail || 'Invalid credentials'; // Display the error message or a default message
+        
+                        // Store the access token securely (e.g., in a cookie or local storage)
+                        document.cookie = `access_token=${data.access_token}; path=/; secure; samesite=strict`;
+        
+                        console.log('Access Token:', data.access_token);
+        
+                        // Redirect to the protected page
+                        window.location.href = '/protected';
+                    } else {
+                        const errorData = await response.json();
+                        console.error('Error:', errorData.detail);
+                        // Handle login error, e.g., display error message to the user
                     }
                 } catch (error) {
                     console.error('Error:', error);
-                    errorMessageElement.textContent = 'An error occurred during login.';
+                    // Handle unexpected errors
+                }
+            }
+        
+            async function fetchProtectedData() {
+                const accessToken = getAccessToken(); // Implement a function to retrieve the access token securely
+        
+                try {
+                    const response = await fetch('/protected', {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${accessToken}`,
+                        },
+                    });
+        
+                    if (response.ok) {
+                        const data = await response.json();
+                        console.log('Protected Data:', data);
+                    } else {
+                        // Handle unauthorized access or other errors
+                        console.error('Error:', response.statusText);
+                    }
+                } catch (error) {
+                    // Handle unexpected errors
+                    console.error('Error:', error);
                 }
             }
         </script>
-    </body>
-</html>
+        
+        </body>
+        </html>
