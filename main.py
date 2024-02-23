@@ -1,4 +1,4 @@
-from fastapi import Depends, FastAPI, HTTPException, status,  Request
+from fastapi import Depends, FastAPI, HTTPException, status,  Request, Cookie, Response
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
@@ -9,6 +9,8 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from datetime import datetime, timedelta, timezone
 from jose import JWTError, jwt
 from typing import Annotated
+
+from fastapi.security.base import SecurityBase
 
 
 app = FastAPI()
@@ -125,8 +127,36 @@ async def get_current_active_user(
     return current_user
 
 
+
+def create_token_cookie(token: str):
+    return f"token={token}; httponly=true; samesite=Lax; Path=/"
+
+class CookieToken(SecurityBase):
+    def __call__(self, request: Request):
+        return request.cookies.get("token")
+
+async def getuser(token: str = Depends(CookieToken())):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username: str = payload.get("sub")
+        if username is None:
+            raise credentials_exception
+        token_data = TokenData(username=username)
+    except JWTError:
+        raise credentials_exception
+    user = await get_user(db, username=token_data.username)
+    if user is None:
+        raise credentials_exception
+    return user
+
+
 @app.post("/login")
-async def login_for_access_token(
+async def login_for_access_token(response: Response,
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()]
 ) -> Token:
     user = await authenticate_user(form_data.username, form_data.password)
@@ -140,6 +170,7 @@ async def login_for_access_token(
     access_token = create_access_token(
         data={"sub": user.username}, expires_delta=access_token_expires
     )
+    response.set_cookie(key="token", value=access_token, httponly=True)
     return Token(access_token=access_token, token_type="bearer")
 
 @app.get("/users/me/", response_model=User)
@@ -193,3 +224,7 @@ async def login_for_access_token(
         data={"sub": user.username}, expires_delta=access_token_expires
     )
     return Token(access_token=access_token, token_type="bearer")
+
+@app.get("/test", response_class=HTMLResponse)
+def protected_route(request: Request, current_user: User = Depends(getuser)):
+    return templates.TemplateResponse("test.html", {"request": request, "username": current_user.username})

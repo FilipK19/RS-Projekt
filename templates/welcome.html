@@ -2,7 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Form</title>y
+    <title>Login Form</title>
          <style>
             body {
                 text-align: center;
@@ -89,7 +89,7 @@
                         console.log('Access Token:', data.access_token);
         
                         // Redirect to the protected page
-                        window.location.href = '/protected';
+                        window.location.href = '/test';
                     } else {
                         const errorData = await response.json();
                         console.error('Error:', errorData.detail);
@@ -98,30 +98,6 @@
                 } catch (error) {
                     console.error('Error:', error);
                     // Handle unexpected errors
-                }
-            }
-        
-            async function fetchProtectedData() {
-                const accessToken = getAccessToken(); // Implement a function to retrieve the access token securely
-        
-                try {
-                    const response = await fetch('/protected', {
-                        method: 'GET',
-                        headers: {
-                            'Authorization': `Bearer ${accessToken}`,
-                        },
-                    });
-        
-                    if (response.ok) {
-                        const data = await response.json();
-                        console.log('Protected Data:', data);
-                    } else {
-                        // Handle unauthorized access or other errors
-                        console.error('Error:', response.statusText);
-                    }
-                } catch (error) {
-                    // Handle unexpected errors
-                    console.error('Error:', error);
                 }
             }
         </script>
