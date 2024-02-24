@@ -20,56 +20,45 @@
         }
     </style>
 </head>
-<body>
-    <h1>Collaborate</h1>
+    <body>
+        <h1>Collaborate</h1>
 
-    <form id="register">
-        <div class="input-container">
+        <form id="registrationForm">
             <label for="username">Username:</label>
-            <input type="text" id="username" name="username" placeholder="Input username" required><br>
-        </div>
-
-        <div class="input-container">
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" placeholder="Password" required><br>
-        </div>
-
-        <button type="button" onclick="register()">Register</button>
+            <input type="text" id="username" name="username" required>
         
-        <div class="error-message" id="error-message"></div>
-    </form>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+        
+            <button type="button" onclick="registerUser()">Register</button>
 
-    <script>
-        function register() {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-    
-            const formData = {
-                username: username,
-                password: password
-            };
-    
-            fetch('/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: formData, 
-            })
-            .then(response => {
+            <div class="error-message" id="error-message"></div>
+        </form>
+        
+        <script>
+            async function registerUser() {
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+        
+                const response = await fetch('/register/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        hashed_password: password
+                    })
+                });
+        
                 if (response.ok) {
+                    alert('User registered successfully!');
                     window.location.href = 'http://127.0.0.1:8000/';
                 } else {
-                    return response.json();
+                    const data = await response.json();
+                    alert(`Error: ${data.detail}`);
                 }
-            })
-            .then(data => {
-                if (data) {
-                    console.log(data);
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        }
-    </script>
-</body>
+            }
+        </script>
+    </body>
 </html>
