@@ -52,9 +52,9 @@
             fetch('/register', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: JSON.stringify(formData),
+                body: formData, 
             })
             .then(response => {
                 if (response.ok) {

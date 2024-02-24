@@ -53,15 +53,23 @@
         <p> </p>
 
         <form id="loginForm">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required><br>
+            <div class="input-container">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" placeholder="Input username" required><br>
+            </div>
         
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required><br>
+            <div class="input-container">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" placeholder="Password" required><br>
+            </div>
         
             <button type="button" onclick="submitLoginForm()">Login</button>
+            
+            <a href="/register">
+                <button type="button">Register</button>
+            </a>
         </form>
-        
+
         <script>
             async function submitLoginForm() {
                 const username = document.getElementById('username').value;
@@ -72,7 +80,7 @@
                 formData.append('password', password);
         
                 try {
-                    const response = await fetch('/login', {
+                    const response = await fetch('/token', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/x-www-form-urlencoded',
@@ -89,7 +97,7 @@
                         console.log('Access Token:', data.access_token);
         
                         // Redirect to the protected page
-                        window.location.href = '/test';
+                        window.location.href = '/home';
                     } else {
                         const errorData = await response.json();
                         console.error('Error:', errorData.detail);
@@ -101,6 +109,5 @@
                 }
             }
         </script>
-        
-        </body>
-        </html>
+    </body>
+</html>
