@@ -18,12 +18,10 @@ async def create_form(request: Request):
     documents = collection.find()
     return templates.TemplateResponse("edit.html", {"request": request, "documents": documents})
 
-
 @app.get("/edit_document/{document_id}", response_class=HTMLResponse)
 async def edit_document(request: Request, document_id: str):
     document = get_document(document_id)
     return templates.TemplateResponse("edit2.html", {"request": request, "document": document, "document_id": document_id})
-
 
 @app.post("/update_document/{document_id}")
 async def update_document(document_id: str, content: str = Form(...)):
@@ -31,10 +29,17 @@ async def update_document(document_id: str, content: str = Form(...)):
     collection.update_one({"_id": document_id_obj}, {"$set": {"content": content}})
     return {"status": "Document updated successfully"}
 
-
-
 def get_document(document_id: str):
     document = collection.find_one({"_id": ObjectId(document_id)})
     if document:
         return {"name": document["name"], "description": document["description"], "content": document["content"]}
     return None
+
+@app.delete("/delete/{document_id}")
+async def delete_document_post(document_id: str):
+    document_id_obj = ObjectId(document_id)
+    result = collection.delete_one({"_id": document_id_obj})
+    if result.deleted_count == 1:
+        return {"status": "Document deleted successfully"}
+    else:
+        return {"status": "Document not found or already deleted"}
