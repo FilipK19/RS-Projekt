@@ -44,9 +44,14 @@
             <form method="get" action="/edit_document/{{ document._id }}">
                 <button class="edit-button" type="submit">{{ 'Name: ' ~ document.name }}<span class="space"></span>{{'Description: ' ~ document.description}}</button>
             </form>
-            <button class="delete-button" onclick="confirmDelete('{{ document._id }}')">Delete</button>
+            <form method="delete" action="/delete/{document_id}">
+                <button class="delete-button" type="button" onclick="confirmDelete('{{ document._id }}')">Delete</button>
+            </form>
         </div>
     {% endfor %}
+    <a href="http://127.0.0.1:8000/home">
+        <button type="button">Go to Home</button>
+    </a>
 </body>
 <script>
     function confirmDelete(documentId) {
