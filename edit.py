@@ -1,39 +1,36 @@
-from fastapi import FastAPI, Request, Form
-from fastapi.responses import HTMLResponse
+from fastapi import FastAPI, Form
 from fastapi.templating import Jinja2Templates
 from pymongo import MongoClient
 from bson import ObjectId
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
-templates = Jinja2Templates(directory="e_templates")
-
 
 client = MongoClient("mongodb+srv://admin:admin123@cluster0.1cbo1.mongodb.net/")
 mydb = client["test5"]
 collection = mydb["Documents"]
 
 
-@app.get("/edit", response_class=HTMLResponse)
-async def create_form(request: Request):
-    documents = collection.find()
-    return templates.TemplateResponse("edit.html", {"request": request, "documents": documents})
+# Set up CORS middleware
+origins = [
+    "http://127.0.0.1:8000",  # Add the origin of your frontend application
+    # Add other origins as needed
+]
 
-@app.get("/edit_document/{document_id}", response_class=HTMLResponse)
-async def edit_document(request: Request, document_id: str):
-    document = get_document(document_id)
-    return templates.TemplateResponse("edit2.html", {"request": request, "document": document, "document_id": document_id})
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],  # You can specify specific HTTP methods if needed
+    allow_headers=["*"],  # You can specify specific headers if needed
+)
+
 
 @app.post("/update_document/{document_id}")
 async def update_document(document_id: str, content: str = Form(...)):
     document_id_obj = ObjectId(document_id)
     collection.update_one({"_id": document_id_obj}, {"$set": {"content": content}})
-    return {"status": "Document updated successfully"}
-
-def get_document(document_id: str):
-    document = collection.find_one({"_id": ObjectId(document_id)})
-    if document:
-        return {"name": document["name"], "description": document["description"], "content": document["content"]}
-    return None
+    return {"status": "Document updated successfully"}, 200
 
 @app.delete("/delete/{document_id}")
 async def delete_document_post(document_id: str):

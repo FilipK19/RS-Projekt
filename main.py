@@ -1,4 +1,4 @@
-from fastapi import Depends, FastAPI, HTTPException, status,  Request, Cookie, Response
+from fastapi import Depends, FastAPI, HTTPException, status,  Request, Form, Response
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -8,7 +8,8 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from datetime import datetime, timedelta, timezone
 from jose import JWTError, jwt
 from typing import Annotated
-from fastapi.security.base import SecurityBase
+from bson import ObjectId
+from pymongo import MongoClient
 
 
 app = FastAPI()
@@ -152,3 +153,34 @@ async def home(request: Request, current_user: User = Depends(getuser)):
 @app.get("/")
 async def home(request: Request):
     return templates.TemplateResponse("welcome.html", {"request": request})
+
+
+
+#Create document
+client2 = MongoClient("mongodb+srv://admin:admin123@cluster0.1cbo1.mongodb.net/")
+mydb = client2["test5"]
+collection = mydb["Documents"]
+
+@app.get("/create", response_class=HTMLResponse)
+async def create_form(request: Request):
+    documents = collection.find()
+    return templates.TemplateResponse("create.html", {"request": request, "documents": documents})
+
+
+
+#Edit document
+def get_document(document_id: str):
+    document = collection.find_one({"_id": ObjectId(document_id)})
+    if document:
+        return {"name": document["name"], "description": document["description"], "content": document["content"]}
+    return None
+
+@app.get("/edit", response_class=HTMLResponse)
+async def create_form(request: Request):
+    documents = collection.find()
+    return templates.TemplateResponse("edit.html", {"request": request, "documents": documents})
+
+@app.get("/edit_document/{document_id}", response_class=HTMLResponse)
+async def edit_document(request: Request, document_id: str):
+    document = get_document(document_id)
+    return templates.TemplateResponse("edit2.html", {"request": request, "document": document, "document_id": document_id})
