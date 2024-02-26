@@ -5,6 +5,7 @@
         body {
             text-align: center;
             margin: 20px;
+            font-size: 30px;
         }
         h1 {
             margin: 5px 0;
@@ -12,12 +13,24 @@
             font-size: 65px;
         }
         p {
-            margin: 65px;
+            margin: 80px;
+        }
+        .button {
+            padding: 10px 10px;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 5px;
+            border-color: black;
+            color: #3498db;
+            margin: 20px;
         }
     </style>
 </head>
 <body>
     <h1>Collaborate</h1>
+    <p></p>
     <form action="http://127.0.0.1:8001/create_document/" method="post">
         <label for="name">Name:</label>
         <input type="text" id="name" name="name" required><br>
@@ -25,7 +38,13 @@
         <label for="description">Description:</label>
         <input type="text" id="description" name="description" required><br>
 
-        <input type="submit" value="Create Document">
+        <button class="button"> Create Document</button>
+        <button class="button" onclick="goToHome()">Go to home</button>
     </form>
+    <script>
+        function goToHome() {
+            window.location.href = '/home';
+        }
+    </script>
 </body>
 </html>
