@@ -1,5 +1,8 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit2</title>
     <style>
         body {
@@ -7,9 +10,9 @@
             margin: 20px;
         }
         h1 {
-            margin: 5px 0;
             font-family: "Book Antiqua", Palatino, serif;
-            font-size: 65px;
+            font-size: 50px;
+            text-align: center;
         }
         p {
             margin: 50px;
@@ -21,10 +24,71 @@
             cursor: pointer;
             width: 180px;
         }
+        textarea {
+            font-family: "Arial", sans-serif;
+        }
+        nav {
+            background-color: #333;
+            color: #fff;
+            text-align: right;
+            padding: 10px;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropbtn {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            top: 100%;
+            right: 0;
+        }
+        .dropdown-center {
+            top: 50%;
+            left: 50%;
+            transform: translate(-160%, -50%);
+        }
+        .dropdown-content a {
+            color: #333;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: left;
+        }
+        .dropdown-content a:hover {
+            background-color: #ddd;
+        }
+        .dropdown.show-dropdown .dropdown-content {
+            display: block;
+        }
     </style>
 </head>
 <body>
-    <h1>Edit Document</h1>
+    <nav>
+        <div class="dropdown" id="myDropdown">
+            <button class="dropbtn" onclick="toggleDropdown()">Dropdown</button>
+            <div class="dropdown-content">
+                <a href="#">Item 1</a>
+                <a href="#">Item 2</a>
+                <a href="#">Item 3</a>
+            </div>
+            <h1 class="dropdown-center">Edit Document</h1>
+        </div>
+    </nav>
+    
+
     <form id="updateForm" action="http://127.0.0.1:8002/update_document/{{ document_id }}" method="post">
         <textarea name="content" id="content" rows="50" cols="100" required>{{ document.content }}</textarea>
         <p></p>
@@ -48,6 +112,23 @@
             .catch(error => {
                 console.error('Error:', error);
             });
+        }
+        function toggleDropdown() {
+            var dropdown = document.getElementById("myDropdown");
+            dropdown.classList.toggle("show-dropdown");
+        }
+
+        // Close the dropdown if the user clicks outside of it
+        window.onclick = function(event) {
+            if (!event.target.matches('.dropbtn')) {
+                var dropdowns = document.getElementsByClassName("dropdown-content");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show-dropdown')) {
+                        openDropdown.classList.remove('show-dropdown');
+                    }
+                }
+            }
         }
     </script>
 </body>
