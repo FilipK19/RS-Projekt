@@ -1,5 +1,4 @@
 from fastapi import FastAPI, Form
-from fastapi.templating import Jinja2Templates
 from pymongo import MongoClient
 from bson import ObjectId
 from fastapi.middleware.cors import CORSMiddleware
@@ -13,16 +12,15 @@ collection = mydb["Documents"]
 
 # Set up CORS middleware
 origins = [
-    "http://127.0.0.1:8000",  # Add the origin of your frontend application
-    # Add other origins as needed
+    "http://127.0.0.1:8000",
 ]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],  # You can specify specific HTTP methods if needed
-    allow_headers=["*"],  # You can specify specific headers if needed
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
