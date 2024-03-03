@@ -84,6 +84,9 @@
         .dropbtn3 {
             font-family: "Verdana", sans-serif;
         }
+        .dropdown-content a.active {
+            background-color: #ddd;
+        }
     </style>
 </head>
 <body>
@@ -107,48 +110,56 @@
         <button type="button" onclick="updateDocument()">Update Document</button>
     </form>
 
-    <script>
-        function updateDocument() {
-            var form = document.getElementById('updateForm');
-            var formData = new FormData(form);
+<script>
+    function updateDocument() {
+        var form = document.getElementById('updateForm');
+        var formData = new FormData(form);
 
-            fetch('http://127.0.0.1:8002/update_document/{{ document_id }}', {
-                method: 'POST',
-                body: formData,
-            })
-            .then(response => {
-                if (response.ok) {
-                    alert('Updated successfully');
-                    window.location.href = 'http://localhost:8000/edit';
-                } else {
-                    alert('Update failed');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        }
-
-        function toggleDropdown() {
-            var dropdown = document.getElementById("myDropdown");
-            dropdown.classList.toggle("show-dropdown");
-        }
-        function changeFont(font, element) {
-            var dropdownItems = document.querySelectorAll('.dropdown-content a');
-            dropdownItems.forEach(item => item.classList.remove('active'));
-            element.classList.add('active');
-
-            document.getElementById("content").style.fontFamily = font;
-
-            document.getElementById("selectedFont").value = font;
-
-            toggleDropdown();
-}
-        document.addEventListener("DOMContentLoaded", function() {
-            var fontFromDatabase = "{{ document.font }}";
-
-            document.getElementById("content").style.fontFamily = fontFromDatabase;
+        fetch('http://127.0.0.1:8002/update_document/{{ document_id }}', {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('Updated successfully');
+                window.location.href = 'http://localhost:8000/edit';
+            } else {
+                alert('Update failed');
+            }
+        })
+           .catch(error => {
+            console.error('Error:', error);
         });
-    </script>
+        }
+    function toggleDropdown() {
+        var dropdown = document.getElementById("myDropdown");
+        dropdown.classList.toggle("show-dropdown");
+    }
+    function changeFont(font, element) {
+        var dropdownItems = document.querySelectorAll('.dropdown-content a');
+        dropdownItems.forEach(item => item.classList.remove('active'));
+        element.classList.add('active');
+
+        document.getElementById("content").style.fontFamily = font;
+
+        document.getElementById("selectedFont").value = font;
+
+        toggleDropdown();
+    }
+    document.addEventListener("DOMContentLoaded", function() {
+        var fontFromDatabase = "{{ document.font }}";
+
+        // Set the font of the textarea based on the database value
+        document.getElementById("content").style.fontFamily = fontFromDatabase;
+
+        // Highlight the font item in the dropdown
+        var dropdownItems = document.querySelectorAll('.dropdown-content a');
+        dropdownItems.forEach(item => {
+            if (item.textContent.trim() === fontFromDatabase) {
+                item.classList.add('active');
+            }
+        });
+    });
+</script>
 </body>
 </html>
