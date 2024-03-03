@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
 
 client = MongoClient("mongodb+srv://admin:admin123@cluster0.1cbo1.mongodb.net/")
-mydb = client["test5"]
+mydb = client["test6"]
 collection = mydb["Documents"]
 
 
@@ -25,9 +25,9 @@ app.add_middleware(
 
 
 @app.post("/update_document/{document_id}")
-async def update_document(document_id: str, content: str = Form(...)):
+async def update_document(document_id: str, content: str = Form(...), font: str = Form(...)):
     document_id_obj = ObjectId(document_id)
-    collection.update_one({"_id": document_id_obj}, {"$set": {"content": content}})
+    collection.update_one({"_id": document_id_obj}, {"$set": {"content": content, "font":font}})
     return {"status": "Document updated successfully"}, 200
 
 @app.delete("/delete/{document_id}")
