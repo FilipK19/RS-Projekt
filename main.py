@@ -158,7 +158,7 @@ async def home(request: Request):
 
 #Create document
 client2 = MongoClient("mongodb+srv://admin:admin123@cluster0.1cbo1.mongodb.net/")
-mydb = client2["test6"]
+mydb = client2["test7"]
 collection = mydb["Documents"]
 
 @app.get("/create", response_class=HTMLResponse)
@@ -172,7 +172,7 @@ async def create_form(request: Request):
 def get_document(document_id: str):
     document = collection.find_one({"_id": ObjectId(document_id)})
     if document:
-        return {"name": document["name"], "description": document["description"], "content": document["content"], "font":document["font"]}
+        return {"name": document["name"], "description": document["description"], "content": document["content"], "font":document["font"], "fsize":document["fsize"]}
     return None
 
 @app.get("/edit", response_class=HTMLResponse)

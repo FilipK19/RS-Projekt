@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
 
 client = MongoClient("mongodb+srv://admin:admin123@cluster0.1cbo1.mongodb.net/")
-mydb = client["test6"]
+mydb = client["test7"]
 collection = mydb["Documents"]
 
 # Set up CORS middleware
@@ -23,7 +23,8 @@ app.add_middleware(
 
 
 @app.post("/create_document/")
-async def create_document(name: str = Form(...), description: str = Form(...), content: str = Form(default=''), font: str = Form(default='Calibri')):
-    document = {"name": name, "description": description, "content": content, "font":font}
+async def create_document(name: str = Form(...), description: str = Form(...), 
+                          content: str = Form(default=''), font: str = Form(default='Calibri'), fsize: str = Form(default='12px')):
+    document = {"name": name, "description": description, "content": content, "font":font, "fsize":fsize}
     collection.insert_one(document)
     return {"status": "Document created successfully"}, 200

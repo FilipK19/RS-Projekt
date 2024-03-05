@@ -45,6 +45,10 @@
             font-size: 16px;
             border: none;
             cursor: pointer;
+            transform: translate(10%, 10%);
+        }
+        .dropbtnz {
+            transform: translate(-10%, -120%);
         }
         .dropdown-content {
             display: none;
@@ -53,12 +57,10 @@
             min-width: 160px;
             box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
             z-index: 1;
-            top: 100%;
+            top: 75%;
             right: 0;
         }
         .dropdown-center {
-            top: 50%;
-            left: 50%;
             transform: translate(-160%, -50%);
             margin: -10px;
         }
@@ -90,15 +92,25 @@
     </style>
 </head>
 <body>
-    <nav>
+    <nav>    
         <div class="dropdown" id="myDropdown">
-            <button class="dropbtn dropbtn1" onclick="toggleDropdown()">Font</button>
+            <button class="dropbtn" onclick="toggleDropdown()">Font</button>
             <div class="dropdown-content">
-                <a href="#" onclick="changeFont('Arial', this)">Arial</a>
-                <a href="#" onclick="changeFont('Times New Roman', this)">Times New Roman</a>
-                <a href="#" onclick="changeFont('Verdana', this)">Verdana</a>
+                <a onclick="changeFont('Arial', this)">Arial</a>
+                <a onclick="changeFont('Times New Roman', this)">Times New Roman</a>
+                <a onclick="changeFont('Verdana', this)">Verdana</a>
             </div>
             <h1 class="dropdown-center">Edit Document</h1>
+        </div>
+        <div class="dropdown" id="myDropdown2">
+            <button class="dropbtn dropbtnz" onclick="toggleDropdown2()">Font Size</button>
+            <div class="dropdown-content">
+                <a onclick="changeFontSize('12px', this)">12</a>
+                <a onclick="changeFontSize('14px', this)">14</a>
+                <a onclick="changeFontSize('16px', this)">16</a>
+                <a onclick="changeFontSize('18px', this)">18</a>
+                <a onclick="changeFontSize('20px', this)">20</a>
+            </div>
         </div>
     </nav>
     <p></p>
@@ -106,6 +118,7 @@
     <form id="updateForm" action="http://127.0.0.1:8002/update_document/{{ document_id }}" method="post">
         <textarea name="content" id="content" rows="50" cols="100" required>{{ document.content }}</textarea>
         <input type="hidden" name="font" id="selectedFont" value="{{ document.font }}">
+        <input type="hidden" name="fsize" id="selectedFontSize" value="{{ document.fsize }}">
         <p></p>
         <button type="button" onclick="updateDocument()">Update Document</button>
     </form>
@@ -135,6 +148,10 @@
         var dropdown = document.getElementById("myDropdown");
         dropdown.classList.toggle("show-dropdown");
     }
+    function toggleDropdown2() {
+        var dropdown = document.getElementById("myDropdown2");
+        dropdown.classList.toggle("show-dropdown");
+    }
     function changeFont(font, element) {
         var dropdownItems = document.querySelectorAll('.dropdown-content a');
         dropdownItems.forEach(item => item.classList.remove('active'));
@@ -146,11 +163,24 @@
 
         toggleDropdown();
     }
+    function changeFontSize(fonts, element) {
+        var dropdownItems = document.querySelectorAll('.dropdown-content a');
+        dropdownItems.forEach(item => item.classList.remove('active'));
+        element.classList.add('active');
+
+        document.getElementById("content").style.fontSize = fonts;
+
+        document.getElementById("selectedFontSize").value = fonts;
+
+        toggleDropdown();
+    }
     document.addEventListener("DOMContentLoaded", function() {
         var fontFromDatabase = "{{ document.font }}";
+        var fontSizeFromDatabase = "{{ document.fsize }}";
 
         // Set the font of the textarea based on the database value
         document.getElementById("content").style.fontFamily = fontFromDatabase;
+        document.getElementById("content").style.fontSize = fontSizeFromDatabase;
 
         // Highlight the font item in the dropdown
         var dropdownItems = document.querySelectorAll('.dropdown-content a');
