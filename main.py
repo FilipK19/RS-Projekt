@@ -176,7 +176,7 @@ def get_document(document_id: str):
     return None
 
 @app.get("/edit", response_class=HTMLResponse)
-async def create_form(request: Request):
+async def create_form(request: Request, current_user: User = Depends(getuser)):
     documents = collection.find()
     return templates.TemplateResponse("edit.html", {"request": request, "documents": documents})
 
