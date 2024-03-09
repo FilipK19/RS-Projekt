@@ -61,7 +61,7 @@
             right: 0;
         }
         .dropdown-center {
-            transform: translate(-160%, -50%);
+            transform: translate(-110%, -50%);
             margin: -10px;
         }
         .dropdown-content a {
@@ -89,6 +89,28 @@
         .dropdown-content a.active {
             background-color: #ddd;
         }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, 100%);
+            padding: 25px;
+            color: #333;
+            border: 5px solid #000;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .pop-up {
+            text-align: left;
+            transform: translate(0%, -220%);
+        }
+        input {
+            width: 100%;
+            padding: 20px;
+            margin-top: 10px;
+            box-sizing: border-box;
+        }
     </style>
 </head>
 <body>
@@ -110,6 +132,15 @@
                 <a onclick="changeFontSize('16px', this)">16px</a>
                 <a onclick="changeFontSize('18px', this)">18px</a>
                 <a onclick="changeFontSize('20px', this)">20px</a>
+            </div>
+        </div>
+        <div class="pop-up">
+            <button class="dropbtn" onclick="openModal()">Notes</button>
+            <div id="myModal" class="modal">
+                <span onclick="closeModal()" style="cursor: pointer; position: absolute; top: 10px; right: 10px;">&times;</span>
+                <input type="text" placeholder="Type something...">
+
+                <button class="dropbtn">Save</button>
             </div>
         </div>
     </nav>
@@ -190,6 +221,13 @@
             }
         });
     });
+    function openModal() {
+      document.getElementById("myModal").style.display = "block";
+    }
+
+    function closeModal() {
+      document.getElementById("myModal").style.display = "none";
+    }
 </script>
 </body>
 </html>
