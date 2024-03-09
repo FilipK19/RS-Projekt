@@ -95,21 +95,21 @@
     <nav>    
         <div class="dropdown" id="myDropdown">
             <button class="dropbtn" onclick="toggleDropdown()">Font</button>
-            <div class="dropdown-content">
-                <a onclick="changeFont('Arial', this)">Arial</a>
-                <a onclick="changeFont('Times New Roman', this)">Times New Roman</a>
-                <a onclick="changeFont('Verdana', this)">Verdana</a>
+            <div class="dropdown-content font-dropdown">
+                <a class="dropbtn1" onclick="changeFont('Arial', this)">Arial</a>
+                <a class="dropbtn2" onclick="changeFont('Times New Roman', this)">Times New Roman</a>
+                <a class="dropbtn3" onclick="changeFont('Verdana', this)">Verdana</a>
             </div>
             <h1 class="dropdown-center">Edit Document</h1>
         </div>
         <div class="dropdown" id="myDropdown2">
             <button class="dropbtn dropbtnz" onclick="toggleDropdown2()">Font Size</button>
-            <div class="dropdown-content">
-                <a onclick="changeFontSize('12px', this)">12</a>
-                <a onclick="changeFontSize('14px', this)">14</a>
-                <a onclick="changeFontSize('16px', this)">16</a>
-                <a onclick="changeFontSize('18px', this)">18</a>
-                <a onclick="changeFontSize('20px', this)">20</a>
+            <div class="dropdown-content font-size-dropdown">
+                <a onclick="changeFontSize('12px', this)">12px</a>
+                <a onclick="changeFontSize('14px', this)">14px</a>
+                <a onclick="changeFontSize('16px', this)">16px</a>
+                <a onclick="changeFontSize('18px', this)">18px</a>
+                <a onclick="changeFontSize('20px', this)">20px</a>
             </div>
         </div>
     </nav>
@@ -153,8 +153,8 @@
         dropdown.classList.toggle("show-dropdown");
     }
     function changeFont(font, element) {
-        var dropdownItems = document.querySelectorAll('.dropdown-content a');
-        dropdownItems.forEach(item => item.classList.remove('active'));
+        var fontDropdownItems = document.querySelectorAll('.font-dropdown a');
+        fontDropdownItems.forEach(item => item.classList.remove('active'));
         element.classList.add('active');
 
         document.getElementById("content").style.fontFamily = font;
@@ -164,15 +164,15 @@
         toggleDropdown();
     }
     function changeFontSize(fonts, element) {
-        var dropdownItems = document.querySelectorAll('.dropdown-content a');
-        dropdownItems.forEach(item => item.classList.remove('active'));
+        var fontSizeDropdownItems = document.querySelectorAll('.font-size-dropdown a');
+        fontSizeDropdownItems.forEach(item => item.classList.remove('active'));
         element.classList.add('active');
 
         document.getElementById("content").style.fontSize = fonts;
 
         document.getElementById("selectedFontSize").value = fonts;
 
-        toggleDropdown();
+        toggleDropdown2();
     }
     document.addEventListener("DOMContentLoaded", function() {
         var fontFromDatabase = "{{ document.font }}";
@@ -185,7 +185,7 @@
         // Highlight the font item in the dropdown
         var dropdownItems = document.querySelectorAll('.dropdown-content a');
         dropdownItems.forEach(item => {
-            if (item.textContent.trim() === fontFromDatabase) {
+            if (item.textContent.trim() === fontFromDatabase || item.textContent.trim() === fontSizeFromDatabase) {
                 item.classList.add('active');
             }
         });
