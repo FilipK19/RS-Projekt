@@ -19,7 +19,7 @@
         }
         button {
             color: black;
-            padding: 15px;
+            padding: 10px;
             font-size: 16px;
             cursor: pointer;
             width: 180px;
@@ -41,7 +41,6 @@
         .dropbtn {
             background-color: #333;
             color: #fff;
-            padding: 10px;
             font-size: 16px;
             border: none;
             cursor: pointer;
@@ -49,6 +48,10 @@
         }
         .dropbtnz {
             transform: translate(-10%, -120%);
+        }
+        .notsbtn {
+            transform: translate(20%, -180%);
+            padding: 0;
         }
         .dropdown-content {
             display: none;
@@ -129,9 +132,9 @@
             </div>
         </div>
         <div class="pop-up">
-            <button onclick="openModal()">Notes</button>
+            <button class="notsbtn dropbtn" onclick="openModal()">Notes</button>
             <div id="myModal" class="modal">
-                <span onclick="closeModal()" style="cursor: pointer; position: absolute; top: 10px; right: 10px;">&times;</span>
+                <span onclick="closeModal()" style="cursor: pointer; position: absolute; top: 10px; right: 10px; font-size: 45px;">&times;</span>
                 <textarea id="notesInput" placeholder="Type some notes" rows="10" cols="75">{{document.notes}}</textarea>
 
                 <button class="dropbtn" onclick="saveNotes(), closeModal()">Save</button>
