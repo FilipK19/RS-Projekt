@@ -6,11 +6,13 @@
             text-align: center;
             margin: 20px;
             font-size: 30px;
+            color: #001861;
         }
         h1 {
             margin: 5px 0;
             font-family: "Book Antiqua", Palatino, serif;
             font-size: 65px;
+            color: #001861;
         }
         p {
             margin: 80px;
@@ -21,10 +23,14 @@
             font-weight: bold;
             text-align: center;
             cursor: pointer;
-            border-radius: 5px;
-            border-color: black;
-            color: #3498db;
+            color: #001861;
+            background-color: #fff;
+            border: 2px solid #001861;
+            border-radius: 20px;
             margin: 20px;
+        }
+        .custom-space {
+            margin-right: 65px;
         }
     </style>
 </head>
@@ -32,14 +38,14 @@
     <h1>Collaborate</h1>
     <p></p>
     <form id="createForm" action="http://127.0.0.1:8001/create_document/" method="post">
-        <label for="name">Name:</label>
+        <label for="name">Name:<span class="custom-space"></span></label>
         <input type="text" id="name" name="name" required><br>
 
         <label for="description">Description:</label>
         <input type="text" id="description" name="description" required><br>
 
-        <button class="button" type="button" onclick="createDocument()">Create Document</button>
         <button class="button" onclick="goToHome()">Go to home</button>
+        <button class="button" type="button" onclick="createDocument()">Create Document</button>
     </form>
     <script>
         function createDocument() {

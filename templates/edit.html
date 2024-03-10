@@ -10,6 +10,7 @@
             margin: 5px 0;
             font-family: "Book Antiqua", Palatino, serif;
             font-size: 65px;
+            color: #001861;
         }
         p {
             margin: 50px;
@@ -25,14 +26,26 @@
             font-size: 16px;
             cursor: pointer;
             display: block;
+            color: #00274D;
+            background-color: #fff;
+            border: 2px solid #001861;
+            border-radius: 20px;
         }
         .edit-button {
-            color: black;
             width: 500px;
             text-align: left;
         }
         .space {
             margin-right: 50px;
+        }
+        .h-button {
+            background-color: #001861;
+            color: #fff;
+            font-size: 16px;
+            border: 5px solid #001861;
+            border-radius: 20px;
+            cursor: pointer;
+            padding: 12px;
         }
     </style>
 </head>
@@ -50,7 +63,7 @@
         </div>
     {% endfor %}
     <a href="/home">
-        <button type="button">Go to Home</button>
+        <button type="button" class="h-button">Go to Home</button>
     </a>
 </body>
 <script>
