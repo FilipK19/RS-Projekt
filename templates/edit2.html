@@ -95,21 +95,15 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, 100%);
-            padding: 25px;
+            padding: 20px;
             color: #333;
             border: 5px solid #000;
-            border-radius: 10px;
+            border-radius: 20px;
             text-align: center;
         }
         .pop-up {
             text-align: left;
             transform: translate(0%, -220%);
-        }
-        input {
-            width: 100%;
-            padding: 20px;
-            margin-top: 10px;
-            box-sizing: border-box;
         }
     </style>
 </head>
@@ -135,12 +129,12 @@
             </div>
         </div>
         <div class="pop-up">
-            <button class="dropbtn" onclick="openModal()">Notes</button>
+            <button onclick="openModal()">Notes</button>
             <div id="myModal" class="modal">
                 <span onclick="closeModal()" style="cursor: pointer; position: absolute; top: 10px; right: 10px;">&times;</span>
-                <input type="text" placeholder="Type something...">
+                <textarea id="notesInput" placeholder="Type something..." rows="10" cols="75">{{document.notes}}</textarea>
 
-                <button class="dropbtn">Save</button>
+                <button class="dropbtn" onclick="saveNotes(), closeModal()">Save</button>
             </div>
         </div>
     </nav>
@@ -150,6 +144,7 @@
         <textarea name="content" id="content" rows="50" cols="100" required>{{ document.content }}</textarea>
         <input type="hidden" name="font" id="selectedFont" value="{{ document.font }}">
         <input type="hidden" name="fsize" id="selectedFontSize" value="{{ document.fsize }}">
+        <input type="hidden" name="notes" id="selectedNotes" value="{{ document.notes }}">
         <p></p>
         <button type="button" onclick="updateDocument()">Update Document</button>
     </form>
@@ -222,11 +217,16 @@
         });
     });
     function openModal() {
-      document.getElementById("myModal").style.display = "block";
+        document.getElementById("myModal").style.display = "block";
     }
-
     function closeModal() {
-      document.getElementById("myModal").style.display = "none";
+        document.getElementById("myModal").style.display = "none";
+    }
+    function saveNotes() {
+        var inputField = document.getElementById("notesInput");
+        var notesValue = inputField.value;
+        document.getElementById("selectedNotes").value = notesValue;
+        closeModal();
     }
 </script>
 </body>
