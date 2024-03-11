@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
 
 client = MongoClient("mongodb+srv://admin:admin123@cluster0.1cbo1.mongodb.net/")
-mydb = client["test8"]
+mydb = client["Documents"]
 collection = mydb["Documents"]
 
 

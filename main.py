@@ -1,4 +1,4 @@
-from fastapi import Depends, FastAPI, HTTPException, status,  Request, Form, Response
+from fastapi import Depends, FastAPI, HTTPException, status,  Request, Response
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -10,6 +10,7 @@ from jose import JWTError, jwt
 from typing import Annotated
 from bson import ObjectId
 from pymongo import MongoClient
+from fastapi.staticfiles import StaticFiles
 
 
 app = FastAPI()
@@ -22,7 +23,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
 #MongoDB baza
 MONGO_URI = "mongodb+srv://admin:admin123@cluster0.1cbo1.mongodb.net/"
-DB_NAME = "ztest"
+DB_NAME = "UserData"
 client = AsyncIOMotorClient(MONGO_URI)
 db = client[DB_NAME]
 
@@ -142,13 +143,11 @@ async def login_for_access_token(response: Response,
 async def register(request: Request):
     return templates.TemplateResponse("register.html", {"request": request})
 
-@app.get("/test", response_class=HTMLResponse)
-def protected_route(request: Request, current_user: User = Depends(getuser)):
-    return templates.TemplateResponse("test.html", {"request": request, "username": current_user.username})
+app.mount("/background", StaticFiles(directory="background"), name="background")
 
 @app.get("/home")
 async def home(request: Request, current_user: User = Depends(getuser)):
-    return templates.TemplateResponse("home.html", {"request": request})
+    return templates.TemplateResponse("home.html", {"request": request, "username": current_user.username})
 
 @app.get("/")
 async def home(request: Request):
@@ -158,13 +157,13 @@ async def home(request: Request):
 
 #Create document
 client2 = MongoClient("mongodb+srv://admin:admin123@cluster0.1cbo1.mongodb.net/")
-mydb = client2["test8"]
+mydb = client2["Documents"]
 collection = mydb["Documents"]
 
 @app.get("/create", response_class=HTMLResponse)
-async def create_form(request: Request):
+async def create_form(request: Request, current_user: User = Depends(getuser)):
     documents = collection.find()
-    return templates.TemplateResponse("create.html", {"request": request, "documents": documents})
+    return templates.TemplateResponse("create.html", {"request": request, "documents": documents, "username": current_user.username})
 
 
 
@@ -179,9 +178,9 @@ def get_document(document_id: str):
 @app.get("/edit", response_class=HTMLResponse)
 async def create_form(request: Request, current_user: User = Depends(getuser)):
     documents = collection.find()
-    return templates.TemplateResponse("edit.html", {"request": request, "documents": documents})
+    return templates.TemplateResponse("edit.html", {"request": request, "documents": documents, "username": current_user.username})
 
 @app.get("/edit_document/{document_id}", response_class=HTMLResponse)
-async def edit_document(request: Request, document_id: str):
+async def edit_document(request: Request, document_id: str, current_user: User = Depends(getuser)):
     document = get_document(document_id)
-    return templates.TemplateResponse("edit2.html", {"request": request, "document": document, "document_id": document_id})
+    return templates.TemplateResponse("edit2.html", {"request": request, "document": document, "document_id": document_id, "username": current_user.username})
