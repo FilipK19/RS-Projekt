@@ -25,7 +25,7 @@ app.add_middleware(
 @app.post("/create_document/")
 async def create_document(name: str = Form(...), description: str = Form(...), 
                           content: str = Form(default=''), font: str = Form(default='Calibri'), 
-                          fsize: str = Form(default='12px'), notes: str = Form(default=' ')):
-    document = {"name": name, "description": description, "content": content, "font":font, "fsize":fsize, "notes":notes}
+                          fsize: str = Form(default='12px'), notes: str = Form(default=' '), creator: str = Form(...)):
+    document = {"name": name, "description": description, "content": content, "font":font, "fsize":fsize, "notes":notes, "creator":creator}
     collection.insert_one(document)
     return {"status": "Document created successfully"}, 200

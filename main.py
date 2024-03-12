@@ -172,7 +172,7 @@ def get_document(document_id: str):
     document = collection.find_one({"_id": ObjectId(document_id)})
     if document:
         return {"name": document["name"], "description": document["description"], 
-                "content": document["content"], "font":document["font"], "fsize":document["fsize"], "notes":document["notes"]}
+                "content": document["content"], "font":document["font"], "fsize":document["fsize"], "notes":document["notes"], "creator":document["creator"]}
     return None
 
 @app.get("/edit", response_class=HTMLResponse)

@@ -38,3 +38,4 @@ async def delete_document_post(document_id: str):
         return {"status": "Document deleted successfully"}
     else:
         return {"status": "Document not found or already deleted"}
+

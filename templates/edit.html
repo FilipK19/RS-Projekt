@@ -55,7 +55,8 @@
     {% for document in documents %}
         <div class="document-container">
             <form method="get" action="/edit_document/{{ document._id }}">
-                <button class="edit-button" type="submit">{{ 'Name: ' ~ document.name }}<span class="space"></span>{{'Description: ' ~ document.description}}</button>
+                <button class="edit-button" type="submit">{{ 'Name: ' ~ document.name }}<span class="space"></span>{{'Description: ' ~ document.description}}
+                    <span class="space"></span>{{'Creator: ' ~ document.creator}}</button>
             </form>
             <form method="delete" action="http://127.0.0.1:8002/delete/{document_id}">
                 <button class="delete-button" type="button" onclick="confirmDelete('{{ document._id }}')">Delete</button>
@@ -69,7 +70,6 @@
 <script>
     function confirmDelete(documentId) {
         if (confirm("Are you sure you want to delete this document?")) {
-            // If confirmed, send a DELETE request using Fetch API
             fetch('http://127.0.0.1:8002/delete/' + documentId, {
                 method: 'DELETE'
             })
